@@ -1,0 +1,49 @@
+{% extends 'main.html' %}
+
+{% block content %}
+{% if request.user.is_superuser %}
+    <h3 class="p-1 mx-auto text-center mt-1">Start data collection</h3>
+
+    <form action="{% url 'main_page' %}" method="POST" class="p-3 mt-2 mx-auto" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form__field">
+            <label for="#">{{field.label}}</label>
+            {{field}}
+        </div>
+        {% endfor %}
+        <p><input type="submit" class="btn btn-primary mt-2 mx-auto" value="Start" /></p>
+    </form>
+    <hr>
+    <h3 class="p-1 mx-auto text-center mt-1">All users:</h3>
+    <div class="d-flex mb-3 flex-wrap mx-auto" style="max-width: 80%;">
+    {% for user in all_users %}
+    <div class="card m-1" style="width: 15rem;">
+        <div style="height: 150px; 
+        width: 100%; 
+        background-size: cover; 
+        background-position: center; 
+        background-image: url('{{ user.profile.avatar }}');">
+            {% if not user.profile.avatar %}
+                No avatar
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ user.username }}</h5>
+            <p class="card-text">{{ user.date_joined }}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><b>First name:</b> {{ user.first_name }}</li>
+            <li class="list-group-item"><b>Last name:</b> {{ user.last_name }}</li>
+        </ul>
+        <div class="card-body">
+            <a href="{{ user.profile.avatar }}" class="card-link">Avatar link</a>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+{% else %}
+    <h1 class="p-3 mx-auto text-center mt-5">Welcome to TESTER app</h1>
+    <p class="p-1 mx-auto text-center mt-5">Unfortunately, you are not a super user</p>
+{% endif %}
+{% endblock content %}
